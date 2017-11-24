@@ -1,0 +1,84 @@
+Sub ShtToLib(sht As Worksheet, LibFileName As String, Optional sWriteType As String, Optional Delimiter As String)
+
+    Dim FNum As Integer
+    Dim sPrintLine As String, lr As Long, lc As Long, lrMax As Long, lcMax As Long
+    
+    If sht Is Nothing Then Exit Sub
+    lcMax = sht.UsedRange.Columns.Count
+    'append to text file
+    FNum = FreeFile()
+    Open LibFileName For Append As FNum
+    For lc = 1 To lcMax
+        sPrintLine = ""
+        For lr = 1 To sht.Cells(sht.Rows.Count, lc).End(3).Row
+            'add cell value to line, tab delimited
+            sPrintLine = sPrintLine & sht.Cells(lr, lc).Value & Delimiter
+        Next
+        'print line
+        Print #FNum, sPrintLine
+    Next
+    
+    'close file
+    Close #FNum
+
+End Sub
+
+
+Sub ColumnsToLib(sht As Worksheet, col As Integer, LibFileName As String, Optional sWriteType As String, Optional Delimiter As String)
+
+    Dim FNum As Integer
+    Dim sPrintLine As String, lr As Long
+    
+    If sht Is Nothing Then Exit Sub
+
+    'append to text file
+    FNum = FreeFile()
+    Open LibFileName For Append As FNum
+    
+    sPrintLine = ""
+    For lr = 1 To sht.Cells(sht.Rows.Count, col).End(3).Row
+        'add cell value to line, tab delimited
+        sPrintLine = sPrintLine & sht.Cells(lr, col).Value & Delimiter
+    Next
+    'print line
+    Print #FNum, sPrintLine
+
+    
+    'close file
+    Close #FNum
+
+End Sub
+
+Sub SingleLineToLib(sLine As String, LibFileName As String, Optional sWriteType As String, Optional Delimiter As String)
+
+    Dim FNum As Integer
+    Dim sPrintLine As String, lr As Long
+    
+    If sht Is Nothing Then Exit Sub
+
+    'append to text file
+    FNum = FreeFile()
+    Open LibFileName For Append As FNum
+    
+    sPrintLine = ""
+    
+        'add cell value to line, tab delimited
+    sPrintLine = sPrintLine & sLine & Delimiter
+
+    'print line
+    Print #FNum, sPrintLine
+
+    
+    'close file
+    Close #FNum
+
+End Sub
+
+
+Sub PrintTextToFile(TextToPrint As String, FilePath As String)
+    Dim FNum As Integer
+    FNum = FreeFile()
+    Open FilePath For Append As FNum
+    Print #FNum, TextToPrint
+    Close #FNum
+End Sub
