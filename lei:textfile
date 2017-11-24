@@ -1,0 +1,55 @@
+Private xArr
+
+Public Property Get Arr()
+    Arr = xArr
+End Property
+
+Public Property Let Arr(sTitle) '''类属性赋值
+    
+    Dim FilePath As String
+    Dim FilePathArr() As String
+    Dim FileFullName As String
+    Dim FileName As String
+    Dim FileNameArr() As String
+    
+    Dim ToOpenFolderPath As String
+
+    ToOpenFolderPath = OpenedFolderPath
+    If OpenedFolderPath = "" Then ToOpenFolderPath = ThisWorkbook.Path
+    
+    
+    Set f = Application.FileDialog(msoFileDialogFilePicker)
+    With f
+        .InitialFileName = ToOpenFolderPath
+        .Title = sTitle
+        .AllowMultiSelect = True
+        If .Show = 0 Then
+            Exit Property
+        End If
+        .Title = none
+        
+        ReDim xArr(1 To .SelectedItems.Count, 1 To 5)
+
+        For i = 1 To .SelectedItems.Count
+            Open .SelectedItems(i) For Input As #1
+                FilePath = ""
+                FileFullName = ""
+                FileName = ""
+                FilePath = .SelectedItems(i)
+                FilePathArr = Split(FilePath, Application.PathSeparator)
+                FileFullName = FilePathArr(UBound(FilePathArr))
+                FileNameArr = Split(FileFullName, ".")
+                FileName = Replace(FileFullName, "." & FileNameArr(UBound(FileNameArr)), "")
+                
+                xArr(i, 1) = StrConv(InputB(LOF(1), 1), vbUnicode)
+                xArr(i, 2) = FilePath
+                xArr(i, 3) = FileFullName
+                xArr(i, 4) = FileName
+                xArr(i, 5) = FileNameArr(UBound(FileNameArr))
+            Close #1
+        Next
+    End With
+    OpenedFolderPath = CurDir(f.SelectedItems(1))
+    Set f = Nothing
+    
+End Property
