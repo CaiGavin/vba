@@ -1,0 +1,32 @@
+Function FolderExist(Folderpath As String) As Boolean
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If fso.folderexists(Folderpath) Then
+        FolderExist = True
+    Else
+        FolderExist = False
+    End If
+End Function
+
+Sub FolderCreate(Folderpath As String)
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    fso.CreateFolder (Folderpath)
+End Sub
+
+
+Function FileExist(FilePath As String) As Boolean
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If fso.fileexists(FilePath) Then
+        FileExist = True
+    Else
+        FileExist = False
+    End If
+End Function
+
+Sub FileCreate(FilePath As String)
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    fso.CreateTextFile (FilePath)
+End Sub
