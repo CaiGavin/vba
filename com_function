@@ -1,0 +1,110 @@
+Function OneBlank(s As String)
+    OneBlank = Replace(s, "  ", " ")
+    OneBlank = Replace(OneBlank, "     ", " ")
+    OneBlank = Replace(OneBlank, "    ", " ")
+    OneBlank = Replace(OneBlank, "   ", " ")
+    OneBlank = Replace(OneBlank, "  ", " ")
+    OneBlank = Replace(OneBlank, "  ", " ")
+    OneBlank = Replace(OneBlank, "  ", " ")
+    OneBlank = Replace(OneBlank, Chr(13), "")
+    OneBlank = Replace(OneBlank, Chr(12), "")
+    OneBlank = Replace(OneBlank, Chr(11), "")
+    OneBlank = Replace(OneBlank, Chr(10), "")
+    OneBlank = Replace(OneBlank, Chr(9), "")
+    OneBlank = Replace(OneBlank, " =", "=")
+    OneBlank = Replace(OneBlank, "= ", "=")
+    OneBlank = Trim(OneBlank)
+    'Debug.Print OneBlank
+End Function
+
+Function IsRegxMatch(ToTestStr As String, sPattern As String) As Boolean
+    IsRegxMatch = False
+    With CreateObject("vbscript.regexp")
+        .Pattern = sPattern
+        .Global = True
+        .IgnoreCase = True
+        If .Test(ToTestStr) = True Then
+            IsRegxMatch = True
+        End If
+    End With
+End Function
+
+Function getRegxMatch(ToGetStr As String, sPattern As String) As String
+    getRegxMatch = "0"
+    Dim Match As Object, Matches As Object
+    With CreateObject("vbscript.regexp")
+        .Pattern = sPattern
+        .Global = True
+        .IgnoreCase = True
+        If .Test(ToGetStr) = True Then
+            Set Matches = .Execute(ToGetStr)
+            getRegxMatch = Matches(0)
+        End If
+    End With
+End Function
+
+Function getMatchArr(ToGetStr As String, sPattern As String)
+    Dim MatchArr() As String
+    Dim Match As Object, Matches As Object
+    With CreateObject("vbscript.regexp")
+        .Pattern = sPattern
+        .Global = True
+        .IgnoreCase = True
+        If .Test(ToGetStr) = True Then
+            Set Matches = .Execute(ToGetStr)
+            cnt = Matches.Count
+            ReDim ModelArr(1 To Matches.Count)
+            i = 1
+            For Each Match In Matches
+                MatchArr(i) = Match
+                ''Debug.Print Match
+                i = i + 1
+            Next
+            getMatchArr = MatchArr
+        End If
+    End With
+    
+End Function
+
+Function ParamSplitChar(s As String)
+    Dim regx As Object
+    Set regx = CreateObject("vbscript.regexp")
+    With regx
+        .Pattern = "([0-9a-zA-Z)]+'?)\s+([a-zA-Z])"   '''''\s for cfs     = '1.5e-10 *(1+dcfs_t2_n18_ckt) '  cfd     = '1.5e-10 *(1+ dcfd_t2_n18_ckt)'
+        .Global = True
+        s = .Replace(s, "$1??$2")
+    End With
+    ParamSplitChar = s
+End Function
+
+
+Function SplitParamsToArr(s As String)
+    ''Debug.Print s
+    s = Trim(s)
+    Dim regx As Object
+    Set regx = CreateObject("vbscript.regexp")
+    With regx
+        .Pattern = "([0-9a-zA-Z)\s]+'?)\s+([a-zA-Z])"
+        .Global = True
+        s = .Replace(s, "$1??$2")
+    End With
+    ''Debug.Print s
+    s = Replace(s, Chr(13), "")
+    SplitParamsToArr = Split(s, "??")
+End Function
+
+Function getParamValue(s As String)
+    Dim sParamEquation As String
+    s = LCase(s)
+    
+    If IsRegxMatch(s, "^\s*\+?\s*\w+\s*=\s*'?.'?") Then
+        sParamName = Split(s, "=")(0)
+        sParamEquation = Split(s, "=")(1)
+        sParamEquation = Replace(OneBlank(sParamEquation), " ", "")
+        sStrAfterClear = ""
+        sStrAfterClear = getRegxMatch(sParamEquation, "^'?[\-+]*[0-9.]+(e[\-+]*[0-9]*)*")
+        sStrAfterClear = Replace(sStrAfterClear, "'", "")
+        getParamValue = sStrAfterClear
+    End If
+
+End Function
