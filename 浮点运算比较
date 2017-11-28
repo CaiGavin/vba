@@ -1,0 +1,2 @@
+''''浮点运算比较Sub DeleteRepeatedSize(rng As Range, err As Single)        Dim i As Integer    Dim j As Integer        rng.Select    Selection.ClearFormats    Selection.RemoveDuplicates Columns:=Array(1, 2), Header:=xlNo           rw2 = rng.Rows.Count
+    For i = rw2 To 1 Step -1        For j = i - 1 To 1 Step -1            If Abs(rng.Cells(i, 1) - rng.Cells(j, 1)) < err Then                If Abs(rng.Cells(i, 2) - rng.Cells(j, 2)) < err Then                    rng.Rows(i).Delete                End If            End If        Next    NextEnd Sub
